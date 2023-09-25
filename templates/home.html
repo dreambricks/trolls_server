@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='home.css') }}">
+</head>
+<body>
+    <h1>Bem-vindo à Página Inicial</h1>
+    {% if current_user.is_authenticated %}
+    <p>Olá, {{ current_user.username }}!</p>
+    <a href="{{ url_for('auth.logout') }}">Sair</a>
+    {% else %}
+    <p>Faça o <a href="{{ url_for('auth.login') }}">login</a> para acessar esta página.</p>
+    <p>Faça o <a href="{{ url_for('auth.register') }}">cadastro</a> para criar uma conta.</p>
+    {% endif %}
+</body>
+</html>
