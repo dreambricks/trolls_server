@@ -21,8 +21,13 @@ def load_user(username):
         return None
     return User(username)
 
+@login_manager.unauthorized_handler
+def unauthorized():
+    return render_template('acesso_negado.html')
+
 
 @auth.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
     if request.method == 'POST':
         username = request.form['username']
