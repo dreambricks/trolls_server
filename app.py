@@ -22,13 +22,19 @@ app.register_blueprint(auth)
 def home():
     return render_template('login.html')
 
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
 @app.route('/term-accept')
 def terms_accept():
     udp_sender1.send("yes")
+    return render_template('terms-answer.html')
 
 @app.route('/term-notaccept')
 def terms_notaccept():
     udp_sender1.send("no")
+    return render_template('terms-answer.html')
 
 
 if __name__ == '__main__':

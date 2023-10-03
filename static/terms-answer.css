@@ -1,0 +1,39 @@
+html{
+    font-family: "Futura", sans-serif;
+}
+
+body {
+    background-image: url('/static/image/background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.card {
+    width: 350px;
+    color: white;
+    background-color: #7E2779;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.card-header {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
