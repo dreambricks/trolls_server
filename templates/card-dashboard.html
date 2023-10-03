@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logs</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='card-dashboard.css') }}">
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">LOGS</div>
+        {% for item in data_total %}
+            <div class="content">
+                <p>{{ item.status }}:</p>
+                <p>{{ item.count }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

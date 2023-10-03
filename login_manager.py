@@ -52,8 +52,8 @@ def do_login():
     if user_data and user_data['password'] == password:
         user = User(username)
         login_user(user)
-        return redirect(url_for('home'))
-    return 'Login inválido.'
+        return redirect(url_for('datalog.card_dashboard'))
+    return render_template('acesso_negado.html')
 
 
 @auth.route('/login')

@@ -1,11 +1,13 @@
 from mongo_setup import db
 
 from flask import Blueprint, render_template, request, jsonify, make_response, Response
+from flask_login import login_required
 from datetime import datetime
 import pytz
 import io
 import csv
 import zipfile
+
 
 datalog = Blueprint('datalog', __name__)
 
@@ -61,6 +63,8 @@ def formulario():
     log.save()
 
     return '', 200
+
+
 @datalog.route('/datalogs', methods=['GET'])
 def get_all_data():
     docs = get_all_documents()
@@ -72,6 +76,7 @@ def get_all_data():
         log['uploadedData'] = log['uploadedData'].strftime("%Y-%m-%dT%H:%M:%SZ")
 
     return jsonify(docs)
+
 
 @datalog.route('/datalogs/latest-uploaded-total', methods=['GET'])
 def get_latest_uploaded_data():
@@ -88,6 +93,7 @@ def get_latest_uploaded_data():
     data_mais_recente = mais_recente['uploadedData']
 
     return jsonify({"latestUploadedData": data_mais_recente.isoformat()})
+
 
 @datalog.route('/datalogs/status/count', methods=['GET'])
 def perform_aggregation():
@@ -150,3 +156,9 @@ def download_csv_zip():
     return response
 
 
+@datalog.route('/datalogs/card-dashboard')
+@login_required
+def card_dashboard():
+    response = perform_aggregation()
+    data_total = response.json
+    return render_template('card-dashboard.html', data_total=data_total)

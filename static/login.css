@@ -1,6 +1,15 @@
-/* login.css */
+html{
+    font-family: "Futura", sans-serif;
+}
 
-/* Estilos para a página de login */
+body {
+    background-image: url('/static/image/background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+}
+
 .login-container {
     display: flex;
     justify-content: center;

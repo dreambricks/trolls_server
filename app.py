@@ -20,7 +20,7 @@ app.register_blueprint(auth)
 # Rotas
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('login.html')
 
 @app.route('/term-accept')
 def terms_accept():
