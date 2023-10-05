@@ -39,10 +39,12 @@ p {
 }
 
 .buttons-green {
-    margin: 10px;
+    margin: 50px;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 36px;
     background-color: green;
+    width: 300px;
+    height: 150px;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -50,10 +52,12 @@ p {
 }
 
 .buttons-red {
-    margin: 10px;
+    margin: 50px;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 36px;
     background-color: red;
+    width: 300px;
+    height: 150px;
     color: #fff;
     border: none;
     border-radius: 5px;
