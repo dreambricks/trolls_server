@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file, request
+from flask import Flask, render_template, send_file, request, jsonify
 
 from login_manager import login_manager, auth
 
@@ -6,6 +6,9 @@ from datalog import datalog
 
 from udp_sender import UDPSender
 
+from mongo_setup import db
+
+from datetime import datetime, timedelta
 import qrcode
 import io
 import parameters as pm
@@ -21,6 +24,8 @@ app.register_blueprint(datalog)
 
 app.register_blueprint(auth)
 
+user_id = ""
+
 
 # Rotas
 @app.route('/')
@@ -35,8 +40,36 @@ def terms():
 
 @app.route('/term-accept')
 def terms_accept():
-    udp_sender1.send("yes")
-    return render_template('terms-answer.html')
+    collection = db['users_blocked']
+    global user_id
+    if request.remote_addr is not None:
+        user_id = request.remote_addr
+
+    blocked_entry = collection.find_one({'ip': user_id})
+
+    if blocked_entry:
+        expiration_date = blocked_entry['expiration_date']
+
+        if datetime.now() < expiration_date:
+            return render_template('blocked.html')
+        else:
+            collection.delete_one({'ip': user_id})
+            udp_sender1.send("yes")
+            return render_template('terms-answer.html')
+    else:
+        udp_sender1.send("yes")
+        return render_template('terms-answer.html')
+
+@app.route('/block-user', methods=['GET'])
+def block_user():
+    collection = db['users_blocked']
+    global user_id
+    expiration_date = datetime.now() + timedelta(days=1)
+
+    entry = {'ip': user_id, 'expiration_date': expiration_date}
+    collection.insert_one(entry)
+    user_id = ""
+    return jsonify({'message': 'IP bloqueado com sucesso', 'ip': user_id, 'expiration_date': expiration_date})
 
 
 @app.route('/term-notaccept')
@@ -44,6 +77,9 @@ def terms_notaccept():
     udp_sender1.send("no")
     return render_template('terms-answer.html')
 
+@app.route('/blocked')
+def blocked():
+    return render_template('blocked.html')
 
 @app.route('/qrcode')
 def gerar_qrcode():
