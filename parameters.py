@@ -1,4 +1,4 @@
-BASE_URL = "http://192.168.15.163:5000/terms"
+BASE_URL = "http://192.168.15.11:5000"
 UDP_URL= "localhost"
 DIRECTORY = "data"
 HTTP_PORT = 80

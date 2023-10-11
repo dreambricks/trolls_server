@@ -84,7 +84,7 @@ def blocked():
 @app.route('/qrcode')
 def gerar_qrcode():
     # Obtenha o link do parâmetro da consulta na URL.
-    link = pm.BASE_URL
+    link = pm.BASE_URL + '/terms'
 
     # Crie um objeto QRCode com o link fornecido.
     qr = qrcode.QRCode(
