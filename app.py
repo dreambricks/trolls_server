@@ -4,6 +4,8 @@ from login_manager import login_manager, auth
 
 from datalog import datalog
 
+from machine import machine
+
 from udp_sender import UDPSender
 
 from mongo_setup import db
@@ -13,7 +15,7 @@ import qrcode
 import io
 import parameters as pm
 
-udp_sender1 = UDPSender()
+udp_sender = UDPSender()
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -23,6 +25,8 @@ login_manager.init_app(app)
 app.register_blueprint(datalog)
 
 app.register_blueprint(auth)
+
+app.register_blueprint(machine)
 
 user_id = ""
 
@@ -54,11 +58,12 @@ def terms_accept():
             return render_template('blocked.html')
         else:
             collection.delete_one({'ip': user_id})
-            udp_sender1.send("yes")
+            udp_sender.send("yes")
             return render_template('terms-answer.html')
     else:
-        udp_sender1.send("yes")
+        udp_sender.send("yes")
         return render_template('terms-answer.html')
+
 
 @app.route('/block-user', methods=['GET'])
 def block_user():
@@ -73,16 +78,18 @@ def block_user():
 
 
 @app.route('/term-notaccept')
-def terms_notaccept():
-    udp_sender1.send("no")
+def terms_not_accept():
+    udp_sender.send("no")
     return render_template('terms-answer.html')
+
 
 @app.route('/blocked')
 def blocked():
     return render_template('blocked.html')
 
+
 @app.route('/qrcode')
-def gerar_qrcode():
+def generate_qrcode():
     # Obtenha o link do parâmetro da consulta na URL.
     link = pm.BASE_URL + '/terms'
 

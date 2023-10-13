@@ -3,14 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Local development configuration
-.env
 
 # Flask related
 instance/
 webapp.egg-info/
 db.sqlite
-.env
 
 # Virtual environment
 venv/
