@@ -72,7 +72,9 @@ def block_user():
     expiration_date = datetime.now() + timedelta(days=1)
 
     entry = {'ip': user_id, 'expiration_date': expiration_date}
-    collection.insert_one(entry)
+
+    if pm.BLOCK_USERS:
+        collection.insert_one(entry)
     user_id = ""
     return jsonify({'message': 'IP bloqueado com sucesso', 'ip': user_id, 'expiration_date': expiration_date})
 
