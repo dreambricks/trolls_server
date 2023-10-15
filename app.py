@@ -1,5 +1,6 @@
 from flask import Flask, render_template, send_file, request, jsonify
-
+import time
+from arduino_controller import ArduinoControllerThreadObject
 from login_manager import login_manager, auth
 
 from datalog import datalog
@@ -30,6 +31,11 @@ app.register_blueprint(machine)
 
 user_id = ""
 
+block_user = True
+
+
+ard_thread_obj = ArduinoControllerThreadObject()
+ard_thread_obj.get_thread()
 
 # Rotas
 @app.route('/')
@@ -45,7 +51,7 @@ def terms():
 @app.route('/term-accept')
 def terms_accept():
     collection = db['users_blocked']
-    global user_id
+    global user_id, block_user
     if request.remote_addr is not None:
         user_id = request.remote_addr
 
@@ -54,14 +60,16 @@ def terms_accept():
     if blocked_entry:
         expiration_date = blocked_entry['expiration_date']
 
-        if datetime.now() < expiration_date:
+        if block_user and datetime.now() < expiration_date:
             return render_template('blocked.html')
         else:
             collection.delete_one({'ip': user_id})
             udp_sender.send("yes")
+            block_user = True
             return render_template('terms-answer.html')
     else:
         udp_sender.send("yes")
+        block_user = True
         return render_template('terms-answer.html')
 
 
@@ -73,8 +81,7 @@ def block_user():
 
     entry = {'ip': user_id, 'expiration_date': expiration_date}
 
-    if pm.BLOCK_USERS:
-        collection.insert_one(entry)
+    collection.insert_one(entry)
     user_id = ""
     return jsonify({'message': 'IP bloqueado com sucesso', 'ip': user_id, 'expiration_date': expiration_date})
 
@@ -88,6 +95,12 @@ def terms_not_accept():
 @app.route('/blocked')
 def blocked():
     return render_template('blocked.html')
+
+@app.route('/unblock')
+def unblock():
+    global block_user
+    block_user = False
+    return 'ok'
 
 
 @app.route('/qrcode')
@@ -115,6 +128,5 @@ def generate_qrcode():
 
     return send_file(img_bytes, mimetype='image/png')
 
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
