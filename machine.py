@@ -79,15 +79,15 @@ def gift_dispensed():
 @machine.route('/turn_on')
 def turn_on():
     sd = ServerData()
-    sd.button_light = True
-    return 'turned_on'
+    sd.is_machine_on = True
+    return 'ok'
 
 
 @machine.route('/turn_off')
 def turn_off():
     sd = ServerData()
-    sd.button_light = False
-    return 'turned_off'
+    sd.is_machine_on = False
+    return 'ok'
 
 
 @machine.route('/working')
