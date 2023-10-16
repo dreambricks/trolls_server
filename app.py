@@ -1,11 +1,13 @@
 from flask import Flask, render_template, send_file, request, jsonify
-import time
+
 from arduino_controller import ArduinoControllerThreadObject
 from login_manager import login_manager, auth
 
 from datalog import datalog
 
 from machine import machine
+
+from admin import admin
 
 from udp_sender import UDPSender
 
@@ -28,6 +30,8 @@ app.register_blueprint(datalog)
 app.register_blueprint(auth)
 
 app.register_blueprint(machine)
+
+app.register_blueprint(admin)
 
 user_id = ""
 

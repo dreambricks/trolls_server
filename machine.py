@@ -1,6 +1,7 @@
 from flask import Blueprint
 from udp_sender import UDPSender
 from server_data import ServerData
+from mongo_setup import db
 
 machine = Blueprint('machine', __name__)
 
@@ -34,6 +35,18 @@ def bt_pressed():
 def dispense_gift():
     sd = ServerData()
     sd.num_dispensed_gifts += 1
+    collection = db['data']
+
+    first_document = collection.find_one()
+    if first_document:
+        query = {"_id": first_document["_id"]}
+        entry = {"$set": {"counter": sd.num_dispensed_gifts}}
+        collection.update_one(query, entry)
+    else:
+        entry = {"counter": sd.num_dispensed_gifts}
+        collection.insert_one(entry)
+
+
     sd.dispense = True
     return f"gifts_dispensed: {sd.num_dispensed_gifts}"
 
@@ -42,6 +55,18 @@ def dispense_gift():
 def refill():
     sd = ServerData()
     sd.num_dispensed_gifts = 0
+    collection = db['data']
+
+    first_document = collection.find_one()
+
+    if first_document:
+        query = {"_id": first_document["_id"]}
+        entry = {"$set": {"counter": sd.num_dispensed_gifts}}
+        collection.update_one(query, entry)
+    else:
+        entry = {"counter": sd.num_dispensed_gifts}
+        collection.insert_one(entry)
+
     return f"{sd.num_dispensed_gifts}"
 
 
@@ -55,14 +80,14 @@ def gift_dispensed():
 def turn_on():
     sd = ServerData()
     sd.button_light = True
-    return 'ok'
+    return 'turned_on'
 
 
 @machine.route('/turn_off')
 def turn_off():
     sd = ServerData()
     sd.button_light = False
-    return 'ok'
+    return 'turned_off'
 
 
 @machine.route('/working')

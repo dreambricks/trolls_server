@@ -52,7 +52,12 @@ def do_login():
     if user_data and user_data['password'] == password:
         user = User(username)
         login_user(user)
-        return redirect(url_for('datalog.card_dashboard'))
+
+        if request.form['submit_button'] == 'Card':
+            return redirect(url_for('datalog.card_dashboard'))
+        else:
+            return redirect(url_for('admin.admin_page'))
+
     return render_template('acesso_negado.html')
 
 
