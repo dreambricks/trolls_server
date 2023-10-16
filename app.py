@@ -60,7 +60,7 @@ def terms_accept():
     if blocked_entry:
         expiration_date = blocked_entry['expiration_date']
 
-        if block_user and datetime.now() < expiration_date:
+        if pm.BLOCK_USERS and block_user and datetime.now() < expiration_date:
             return render_template('blocked.html')
         else:
             collection.delete_one({'ip': user_id})

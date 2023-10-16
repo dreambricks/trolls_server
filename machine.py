@@ -13,6 +13,7 @@ def turn_light(is_on):
     # is_on = true / false
     sd = ServerData()
     sd.button_light = (is_on == "true")
+    sd.button_pressed = False
 
     return is_on
 
@@ -23,6 +24,7 @@ def bt_pressed():
     if sd.button_pressed:
         sd.button_pressed = False
         udp_sender.send("bt_pressed")
+
         return 'button_pressed'
 
     return 'button_not_pressed'
