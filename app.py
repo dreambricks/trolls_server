@@ -56,8 +56,8 @@ def terms():
 def terms_accept():
     collection = db['users_blocked']
     global user_id, block_user
-    if request.remote_addr is not None:
-        user_id = request.remote_addr
+    if get_client_ip() is not None:
+        user_id = get_client_ip()
 
     blocked_entry = collection.find_one({'ip': user_id})
 
@@ -75,6 +75,14 @@ def terms_accept():
         udp_sender.send("yes")
         block_user = True
         return render_template('terms-answer.html')
+
+
+def get_client_ip():
+    if 'X-Forwarded-For' in request.headers:
+        user_ip = request.headers['X-Forwarded-For']
+    else:
+        user_ip = request.remote_addr
+    return user_ip
 
 
 @app.route('/block-user', methods=['GET'])
@@ -133,4 +141,4 @@ def generate_qrcode():
     return send_file(img_bytes, mimetype='image/png')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=5000)
