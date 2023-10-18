@@ -64,6 +64,11 @@ class ArduinoControllerThread(threading.Thread):
                         #sd.button_pressed = True
                         udp_sender = UDPSender()
                         udp_sender.send("bt_pressed")
+                    elif data == b'dropped\r\n':
+                        print(f"received from arduino: <{data}>")
+                        #sd.button_pressed = True
+                        udp_sender = UDPSender()
+                        udp_sender.send("caiu")
 
             time.sleep(.05)
             #print('pool arduino', sd.dispense)
