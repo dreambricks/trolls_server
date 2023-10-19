@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 import qrcode
 import io
 import parameters as pm
+from server_data import ServerData
 
 udp_sender = UDPSender()
 
@@ -58,6 +59,10 @@ def terms_accept():
     global user_id, block_user
     if get_client_ip() is not None:
         user_id = get_client_ip()
+
+    sd = ServerData()
+    if not sd.is_machine_on:
+        return render_template('blocked.html')
 
     blocked_entry = collection.find_one({'ip': user_id})
 
